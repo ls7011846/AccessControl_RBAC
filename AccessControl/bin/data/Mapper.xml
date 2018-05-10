@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<!--
+		为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的
+		例如namespace="me.gacl.mapping.userMapper"就是me.gacl.mapping(包名)+userMapper(userMapper.xml文件去除后缀)
+	-->
+<mapper namespace="data.Mapper">
+	<!--
+		在select标签中编写查询的SQL语句， 设置select标签的id属性为getUser，id属性值必须是唯一的，不能够重复
+		使用parameterType属性指明查询时使用的参数类型，resultType属性指明查询返回的结果集类型
+		resultType="me.gacl.domain.User"就表示将查询结果封装成一个User类的对象返回
+		User类就是users表所对应的实体类
+	-->
+	
+	<!--根据name查询管理员psd-->
+	<select id="selectmanagerpsd" resultType="string" >
+		select managerpsd from managers where managername=#{managername}
+	</select>
+	<!--根据name查询用户对象-->
+	<select id="selectusersbyname" resultType="entity.Users" >
+		select * from users where username=#{username}
+	</select>
+	<!--根据name查询管理员对象-->
+	<select id="selectmanagersbyname" resultType="entity.Managers" >
+		select * from managers where managername=#{managername}
+	</select>
+	<!--根据name查询用户权限-->
+	<select id="selectperbyname" resultType="string" >
+		select permissions from roles left join users on roles.role=users.role 
+		where users.username=#{username}
+	</select>
+	<!--根据role查询用户权限-->
+	<select id="selectuserperbyrole" resultType="string" >
+		select permissions from roles where role=#{role} 
+	</select>
+	<!--查询assign表-->
+	<select id="selectassign" resultType="entity.ManagerAssign" >
+		select * from managerassign where managerrole=#{managerrole} and userrole =#{userrole} 
+	</select>
+	<!--查询revoke表-->
+	<select id="selectrevoke" resultType="entity.ManagerRevoke" >
+		select * from managerrevoke where managerrole=#{managerrole}
+	</select>
+	<!--新建一个用户-->
+	<select id="insertuser" resultType="string" >
+		insert into users (username,userpsd,role)
+		values (#{username},#{userpsd},#{role})
+	</select>
+	<!--添加修改用户角色-->
+	<select id="updateuserrole" resultType="string" >
+		update users set role=#{role} where username=#{username}
+	</select>
+</mapper>
